@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Expression Parser Calculator — Interactive Demo</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a0c10'/><text x='50' y='70' font-size='52' text-anchor='middle' fill='%23b8f53d' font-family='monospace' font-weight='bold'>=</text></svg>">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0c10;--panel:#12151c;--line:rgba(255,255,255,.09);--txt:#e8eaed;--mut:#9aa0a6;--acc:#b8f53d;--err:#f87171}
+body{background:var(--bg);color:var(--txt);font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh}
+.wrap{max-width:760px;margin:0 auto;padding:48px 20px 80px}
+.badge{display:inline-block;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--acc);border:1px solid rgba(184,245,61,.35);padding:6px 14px;border-radius:99px;margin-bottom:18px}
+h1{font-size:clamp(32px,5vw,54px);font-weight:800;letter-spacing:-.02em;margin-bottom:12px}
+h1 span{color:var(--acc)}
+.sub{color:var(--mut);font-size:17px;max-width:640px;line-height:1.6;margin-bottom:32px}
+.term{background:#05070a;border:1px solid var(--line);border-radius:16px;padding:20px;font-family:ui-monospace,monospace}
+#hist{max-height:300px;overflow-y:auto;margin-bottom:12px;line-height:1.9;font-size:15px}
+#hist .in{color:var(--acc)} #hist .out{color:var(--txt)} #hist .err{color:var(--err)}
+.inrow{display:flex;gap:10px}
+.inrow span{color:var(--acc);padding:12px 0}
+#expr{flex:1;background:transparent;border:none;color:var(--txt);font-family:inherit;font-size:16px;padding:12px 0;min-width:0}
+#expr:focus{outline:none}
+.keys{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:16px}
+.keys button{background:var(--panel);border:1px solid var(--line);color:var(--txt);border-radius:10px;padding:14px;font-size:16px;font-family:ui-monospace,monospace;cursor:pointer;transition:all .15s}
+.keys button:hover{border-color:var(--acc);transform:translateY(-2px)}
+.keys button.fn{color:var(--acc)} .keys button.eq{background:var(--acc);color:#0a0c10;font-weight:700}
+.help{margin-top:20px;color:var(--mut);font-size:13px;line-height:1.8}
+.help code{color:var(--acc);background:rgba(184,245,61,.08);padding:2px 8px;border-radius:6px}
+.links{margin-top:28px;display:flex;gap:12px;flex-wrap:wrap}
+.links a{color:var(--txt);text-decoration:none;border:1px solid var(--line);padding:11px 20px;border-radius:10px;font-size:14px}
+.links a:hover{border-color:var(--acc)}
+footer{margin-top:48px;color:var(--mut);font-size:13px;text-align:center}
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .6s,transform .6s}
+.reveal.on{opacity:1;transform:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="badge reveal">Basic-Calculator · Expression Parser</div>
+<h1 class="reveal">A real parser, <span>not a toy.</span></h1>
+<p class="sub reveal">Tokenizer → recursive-descent parser → AST evaluator. Operator precedence, functions, variables — try it live. Full Python package with 29 tests in the repo.</p>
+
+<div class="term reveal">
+<div id="hist"><div class="out">Type an expression, or use the keys. Try: <span class="in">2 + 3 * (4 - 1)^2</span></div></div>
+<div class="inrow"><span>›</span><input id="expr" placeholder="e.g. sin(pi/2) + x = 5" autocomplete="off"></div>
+<div class="keys">
+<button onclick="key('7')">7</button><button onclick="key('8')">8</button><button onclick="key('9')">9</button><button class="fn" onclick="key('/')">÷</button>
+<button onclick="key('4')">4</button><button onclick="key('5')">5</button><button onclick="key('6')">6</button><button class="fn" onclick="key('*')">×</button>
+<button onclick="key('1')">1</button><button onclick="key('2')">2</button><button onclick="key('3')">3</button><button class="fn" onclick="key('-')">−</button>
+<button onclick="key('0')">0</button><button onclick="key('.')">.</button><button class="fn" onclick="key('^')">^</button><button class="fn" onclick="key('+')">+</button>
+<button class="fn" onclick="key('(')">(</button><button class="fn" onclick="key(')')">)</button><button class="fn" onclick="key('sqrt(')">√</button><button class="eq" onclick="go()">=</button>
+</div>
+</div>
+<div class="help reveal">Supports <code>+ - * / ^ %</code>, parentheses, unary minus, <code>sin cos tan asin acos atan log ln sqrt abs floor ceil exp</code>, constants <code>pi e tau</code>, and variables: <code>x = 5</code> then <code>x^2</code>. Right-associative <code>^</code>.</div>
+
+<div class="links reveal">
+<a href="https://github.com/HVRGAMING2705/Basic-Calculator">View source on GitHub</a>
+<a href="https://github.com/HVRGAMING2705/Basic-Calculator/blob/main/calc">calc/ package</a>
+<a href="https://github.com/HVRGAMING2705/Basic-Calculator/blob/main/test_calc.py">29 tests</a>
+</div>
+<footer>Built by Vikranth Reddy · Expression Parser Calculator</footer>
+</div>
+<script>
+const vars={};const FUNCS={sin:Math.sin,cos:Math.cos,tan:Math.tan,asin:Math.asin,acos:Math.acos,atan:Math.atan,log:x=>Math.log10(x),ln:Math.log,sqrt:Math.sqrt,abs:Math.abs,floor:Math.floor,ceil:Math.ceil,exp:Math.exp};
+const CONSTS={pi:Math.PI,e:Math.E,tau:Math.PI*2};
+function tokenize(s){const t=[];let i=0;while(i<s.length){const c=s[i];
+if(/\s/.test(c)){i++;continue}
+if(/[0-9.]/.test(c)){let j=i;while(j<s.length&&/[0-9.]/.test(s[j]))j++;const v=parseFloat(s.slice(i,j));if(isNaN(v))throw 'Bad number at '+i;t.push({t:'n',v});i=j;continue}
+if(/[a-zA-Z_]/.test(c)){let j=i;while(j<s.length&&/[a-zA-Z0-9_]/.test(s[j]))j++;t.push({t:'id',v:s.slice(i,j)});i=j;continue}
+if('+-*/^%(),='.includes(c)){t.push({t:'op',v:c});i++;continue}
+throw 'Unexpected character "'+c+'" at '+i}t.push({t:'eof'});return t}
+function parse(s){const T=tokenize(s);let p=0;const pk=()=>T[p],nx=()=>T[p++];
+function expr(){let n=term();while(pk().t==='op'&&(pk().v==='+'||pk().v==='-')){const o=nx().v,r=term();n=o==='+'?n+r:n-r}return n}
+function term(){let n=factor();while(pk().t==='op'&&(pk().v==='*'||pk().v==='/'||pk().v==='%')){const o=nx().v,r=factor();
+if(o==='*')n*=r;else if(o==='/'){if(r===0)throw 'Division by zero';n/=r}else n%=r}return n}
+function factor(){let n=unary();if(pk().t==='op'&&pk().v==='^'){nx();n=Math.pow(n,factor())}return n}
+function unary(){if(pk().t==='op'&&pk().v==='-'){nx();return -unary()}if(pk().t==='op'&&pk().v==='+'){nx();return unary()}return primary()}
+function primary(){const t=nx();
+if(t.t==='n')return t.v;
+if(t.t==='id'){const name=t.v;
+if(pk().t==='op'&&pk().v==='('){nx();const args=[];if(!(pk().t==='op'&&pk().v===')')){args.push(expr());while(pk().t==='op'&&pk().v===','){nx();args.push(expr())}}
+if(pk().t!=='op'||pk().v!==')')throw 'Expected )';nx();
+if(!FUNCS[name])throw 'Unknown function '+name;return FUNCS[name](...args)}
+if(name in CONSTS)return CONSTS[name];if(name in vars)return vars[name];throw 'Unknown variable '+name}
+if(t.t==='op'&&t.v==='('){const n=expr();if(pk().t!=='op'||pk().v!==')')throw 'Expected )';nx();return n}
+throw 'Unexpected '+(t.v??t.t)}
+// assignment
+if(T[0].t==='id'&&T[1].t==='op'&&T[1].v==='='){const name=T[0].v;p=2;const v=expr();vars[name]=v;return v}
+const v=expr();if(pk().t!=='eof')throw 'Unexpected '+pk().v;return v}
+function go(){const inp=document.getElementById('expr'),h=document.getElementById('hist');const s=inp.value.trim();if(!s)return;
+h.innerHTML+=`<div class="in">› ${s.replace(/</g,'&lt;')}</div>`;
+try{const v=parse(s);h.innerHTML+=`<div class="out">= ${+v.toFixed(10)}</div>`}catch(e){h.innerHTML+=`<div class="err">Error: ${String(e).replace(/</g,'&lt;')}</div>`}
+inp.value='';h.scrollTop=h.scrollHeight}
+function key(k){document.getElementById('expr').value+=k;document.getElementById('expr').focus()}
+document.getElementById('expr').addEventListener('keydown',e=>{if(e.key==='Enter')go()});
+const io=new IntersectionObserver(e=>e.forEach(x=>x.isIntersecting&&x.target.classList.add('on')),{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>

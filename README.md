@@ -1,45 +1,54 @@
-# NumPy Scientific Computing Lab
+# Expression Parser Calculator
 
-The original notebook did scalar arithmetic with NumPy. This lab shows
-what NumPy is actually for: vectorized computation, broadcasting, and
-linear algebra — plus hard numbers on why it matters.
+The original notebook did arithmetic with plain functions. This is a real
+expression evaluator: a **tokenizer** plus a **recursive-descent parser**
+that builds an AST, plus an evaluator with variables and math functions.
 
-## Features (`scientific.py`)
+## Features
 
-- **Vectorized arithmetic**: `add`, `multiply`, `power`,
-  `safe_divide` (no ZeroDivisionError — returns inf/nan), `stats`
-- **Broadcasting demos**: `rowwise_normalize`, `pairwise_distances`
-  (distance matrix with zero Python loops), `outer_product_table`
-- **Matrix operations**: `matmul`, `inverse`, `determinant`, `eigen`
-  (eigenvalues/vectors), `solve_linear` (Ax = b),
-  `least_squares_fit` (polynomial fit)
-
-## Demos
-
-- `benchmark.py` — Python loops vs NumPy for sum-of-squares and matrix
-  multiplication, with `timeit` and a bar chart (`benchmark.png`).
-- `least_squares.py` — fits a quadratic to noisy data and plots data,
-  true curve, and fit (`least_squares.png`)
+- Operator precedence: `^` (right-associative) > unary minus > `*` `/` `%`
+  > `+` `-`; parentheses
+- Math functions: sin cos tan asin acos atan sqrt exp log ln abs floor
+  ceil round max min
+- Constants: `pi`, `e`, `tau`
+- Variables and assignment: `x = 5`, then `x * 2`
+- Clean errors with source position pointers:
+  `CalcSyntaxError`, `CalcNameError`, `CalcMathError`
+- Interactive REPL (`repl.py`) with `vars`, `funcs`, `help`
+- 29-case test suite (`test_calc.py`)
 
 ## How to run
 
 ```bash
-pip install -r requirements.txt   # numpy, matplotlib
-python benchmark.py
-python least_squares.py
+python repl.py          # interactive calculator
+python test_calc.py     # run the test suite (29 tests)
 ```
 
 ```python
-from scientific import solve_linear, eigen
-solve_linear([[3, 1], [1, 2]], [9, 8])   # array([2., 3.])
-eigen([[2, 0], [0, 3]])                  # eigenvalues 2 and 3
+from calc import calculate
+calculate("2 + 3 * (4 - 1) ^ 2")   # 29.0
+calculate("sin(pi / 2) + log(100, 10)")  # 3.0
 ```
 
-## Sample output
+## Grammar
 
 ```
-n=1,000,000: python loop     98.15 ms | numpy    5.6 ms | speedup       18x
-matmul 120x120: python loop   0.102 s | numpy    1.1 ms | speedup        90x
-true coeffs:      [0.5, -3, 2]
-fitted coeffs:    [0.475, -2.706, 1.511]
+statement := IDENT "=" expr | expr
+expr      := term (("+" | "-") term)*
+term      := factor (("*" | "/" | "%") factor)*
+factor    := ("-" | "+") factor | power
+power     := primary ("^" factor)?
+primary   := NUMBER | IDENT | call | "(" expr ")"
+```
+
+## Project layout
+
+```
+calc/
+  tokenizer.py   source text -> tokens
+  parser.py      tokens -> AST (recursive descent)
+  evaluator.py   AST -> value (variables, functions, constants)
+  errors.py      exception hierarchy with position info
+repl.py          interactive shell
+test_calc.py     29 test cases
 ```

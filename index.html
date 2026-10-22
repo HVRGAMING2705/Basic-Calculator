@@ -61,6 +61,8 @@ footer{margin-top:48px;color:var(--mut);font-size:13px;text-align:center}
 .reveal{opacity:0;transform:translateY(18px);transition:opacity .6s,transform .6s}
 .reveal.on{opacity:1;transform:none}
 </style>
+<meta property="og:image" content="https://basic-calculator-sepia-beta.vercel.app/og.png">
+<meta name="twitter:image" content="https://basic-calculator-sepia-beta.vercel.app/og.png">
 </head>
 <body>
 <div class="wrap">
@@ -86,7 +88,8 @@ footer{margin-top:48px;color:var(--mut);font-size:13px;text-align:center}
 <a href="https://github.com/HVRGAMING2705/Basic-Calculator/blob/main/calc">calc/ package</a>
 <a href="https://github.com/HVRGAMING2705/Basic-Calculator/blob/main/test_calc.py">29 tests</a>
 </div>
-<footer>Built by Vikranth Reddy · Expression Parser Calculator</footer>
+<footer>Built by Vikranth Reddy · Expression Parser Calculator<span class="fleet-legal" style="display:block;text-align:center;padding:10px 0;font-size:13px"><a href="/legal.html">Privacy · Terms</a></span>
+</footer>
 </div>
 <script>
 const vars={};const FUNCS={sin:Math.sin,cos:Math.cos,tan:Math.tan,asin:Math.asin,acos:Math.acos,atan:Math.atan,log:x=>Math.log10(x),ln:Math.log,sqrt:Math.sqrt,abs:Math.abs,floor:Math.floor,ceil:Math.ceil,exp:Math.exp};
@@ -124,5 +127,6 @@ document.getElementById('expr').addEventListener('keydown',e=>{if(e.key==='Enter
 const io=new IntersectionObserver(e=>e.forEach(x=>x.isIntersecting&&x.target.classList.add('on')),{threshold:.1});
 document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 </script>
+<script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>

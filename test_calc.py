@@ -74,6 +74,11 @@ def main():
     check_raises("nope + 1", CalcNameError, ev)
     check_raises("nosuchfn(2)", CalcNameError, ev)
     check_raises("pi = 3", CalcNameError, ev)
+    # raw-crash regressions: these must raise CalcMathError, never leak
+    # OverflowError / ZeroDivisionError / complex results to callers
+    check_raises("exp(1000)", CalcMathError, ev)
+    check_raises("0 ^ -1", CalcMathError, ev)
+    check_raises("(-2) ^ 0.5", CalcMathError, ev)
 
     print(f"\n{PASS} passed, {FAIL} failed")
     raise SystemExit(1 if FAIL else 0)

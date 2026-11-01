@@ -3,25 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Expression Parser Calculator — Interactive Demo</title>
-<meta name="description" content="An interactive expression-parser calculator: a real tokenizer and recursive-descent parser evaluating arithmetic, trig and log functions, constants, and variables live in your browser. Built by Vikranth Reddy.">
+<title>Expression Parser Calculator</title>
+<meta name="description" content="An expression-parser calculator: a real tokenizer and recursive-descent parser evaluating arithmetic, trig and log functions, constants, and variables live in your browser. Built by Vikranth Reddy.">
 <meta name="keywords" content="expression parser, calculator, recursive descent parser, tokenizer, AST evaluator, math functions, online calculator">
 <meta name="author" content="Vikranth Reddy">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://basic-calculator-sepia-beta.vercel.app/">
 <meta name="theme-color" content="#0a0c10">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Expression Parser Calculator — Interactive Demo">
-<meta property="og:description" content="An interactive expression-parser calculator: a real tokenizer and recursive-descent parser evaluating arithmetic, trig and log functions, constants, and variables live in your browser. Built by Vikranth Reddy.">
+<meta property="og:title" content="Expression Parser Calculator">
+<meta property="og:description" content="An expression-parser calculator: a real tokenizer and recursive-descent parser evaluating arithmetic, trig and log functions, constants, and variables live in your browser. Built by Vikranth Reddy.">
 <meta property="og:url" content="https://basic-calculator-sepia-beta.vercel.app/">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Expression Parser Calculator — Interactive Demo">
-<meta name="twitter:description" content="An interactive expression-parser calculator: a real tokenizer and recursive-descent parser evaluating arithmetic, trig and log functions, constants, and variables live in your browser. Built by Vikranth Reddy.">
+<meta name="twitter:title" content="Expression Parser Calculator">
+<meta name="twitter:description" content="An expression-parser calculator: a real tokenizer and recursive-descent parser evaluating arithmetic, trig and log functions, constants, and variables live in your browser. Built by Vikranth Reddy.">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "WebApplication",
-  "name": "Expression Parser Calculator \u2014 Interactive Demo",
+  "name": "Expression Parser Calculator",
   "url": "https://basic-calculator-sepia-beta.vercel.app/",
   "author": {
     "@type": "Person",
@@ -43,13 +43,13 @@ h1 span{color:var(--acc)}
 .sub{color:var(--mut);font-size:17px;max-width:640px;line-height:1.6;margin-bottom:32px}
 .term{background:#05070a;border:1px solid var(--line);border-radius:16px;padding:20px;font-family:ui-monospace,monospace}
 #hist{max-height:300px;overflow-y:auto;margin-bottom:12px;line-height:1.9;font-size:15px}
-#hist .in{color:var(--acc)} #hist .out{color:var(--txt)} #hist .err{color:var(--err)}
+#hist .in{color:var(--acc);cursor:pointer} #hist .out{color:var(--txt)} #hist .err{color:var(--err)}
 .inrow{display:flex;gap:10px}
 .inrow span{color:var(--acc);padding:12px 0}
 #expr{flex:1;background:transparent;border:none;color:var(--txt);font-family:inherit;font-size:16px;padding:12px 0;min-width:0}
 #expr:focus{outline:none}
 .keys{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:16px}
-.keys button{background:var(--panel);border:1px solid var(--line);color:var(--txt);border-radius:10px;padding:14px;font-size:16px;font-family:ui-monospace,monospace;cursor:pointer;transition:all .15smin-height:44px;}
+.keys button{background:var(--panel);border:1px solid var(--line);color:var(--txt);border-radius:10px;padding:14px;font-size:16px;font-family:ui-monospace,monospace;cursor:pointer;transition:all .15s;min-height:44px}
 .keys button:hover{border-color:var(--acc);transform:translateY(-2px)}
 .keys button.fn{color:var(--acc)} .keys button.eq{background:var(--acc);color:#0a0c10;font-weight:700}
 .help{margin-top:20px;color:var(--mut);font-size:13px;line-height:1.8}
@@ -58,8 +58,23 @@ h1 span{color:var(--acc)}
 .links a{color:var(--txt);text-decoration:none;border:1px solid var(--line);padding:11px 20px;border-radius:10px;font-size:14px}
 .links a:hover{border-color:var(--acc)}
 footer{margin-top:48px;color:var(--mut);font-size:13px;text-align:center}
+footer a{color:var(--mut)}
 .reveal{opacity:0;transform:translateY(18px);transition:opacity .6s,transform .6s}
 .reveal.on{opacity:1;transform:none}
+#steps{background:#05070a;border:1px solid var(--line);border-radius:16px;padding:16px 20px;margin-top:16px;font-family:ui-monospace,monospace;font-size:14px;line-height:1.9;display:none}
+#steps h3{font-size:12px;letter-spacing:.15em;text-transform:uppercase;color:var(--acc);margin-bottom:6px}
+#steps .ast{color:var(--mut);word-break:break-all}
+.smallbtn{background:transparent;border:1px solid var(--line);color:var(--mut);border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer;font-family:inherit}
+.smallbtn:hover{border-color:var(--acc);color:var(--txt)}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+#varsline{color:var(--mut);font-size:13px;margin-top:12px;font-family:ui-monospace,monospace;word-break:break-all}
+#varsline b{color:var(--acc);font-weight:400}
+.batch{background:#05070a;border:1px solid var(--line);border-radius:16px;padding:20px;margin-top:16px}
+.batch h2{font-size:16px;margin-bottom:6px}
+.batch p{color:var(--mut);font-size:13px;line-height:1.6;margin-bottom:12px}
+#batch{width:100%;background:var(--panel);border:1px solid var(--line);color:var(--txt);border-radius:10px;padding:12px;font-family:ui-monospace,monospace;font-size:15px;line-height:1.7;min-height:110px;resize:vertical}
+#batchout{margin-top:12px;font-family:ui-monospace,monospace;font-size:14px;line-height:1.9;white-space:pre-wrap;word-break:break-all}
+#batchout .err{color:var(--err)}
 </style>
 <meta property="og:image" content="https://basic-calculator-sepia-beta.vercel.app/og.png">
 <meta name="twitter:image" content="https://basic-calculator-sepia-beta.vercel.app/og.png">
@@ -68,62 +83,131 @@ footer{margin-top:48px;color:var(--mut);font-size:13px;text-align:center}
 <div class="wrap">
 <div class="badge reveal">Basic-Calculator · Expression Parser</div>
 <h1 class="reveal">A real parser, <span>not a toy.</span></h1>
-<p class="sub reveal">Tokenizer → recursive-descent parser → AST evaluator. Operator precedence, functions, variables — try it live. Full Python package with 29 tests in the repo.</p>
+<p class="sub reveal">Tokenizer → recursive-descent parser → AST evaluator. Operator precedence, functions, variables — try it live. Full Python package with 32 tests in the repo. No account, no server: your history and variables stay in your own browser.</p>
 
 <div class="term reveal">
-<div id="hist"><div class="out">Type an expression, or use the keys. Try: <span class="in">2 + 3 * (4 - 1)^2</span></div></div>
+<div id="hist"></div>
 <div class="inrow"><span>›</span><input id="expr" placeholder="e.g. sin(pi/2) + x = 5" autocomplete="off"></div>
 <div class="keys">
 <button onclick="key('7')">7</button><button onclick="key('8')">8</button><button onclick="key('9')">9</button><button class="fn" onclick="key('/')">÷</button>
 <button onclick="key('4')">4</button><button onclick="key('5')">5</button><button onclick="key('6')">6</button><button class="fn" onclick="key('*')">×</button>
 <button onclick="key('1')">1</button><button onclick="key('2')">2</button><button onclick="key('3')">3</button><button class="fn" onclick="key('-')">−</button>
 <button onclick="key('0')">0</button><button onclick="key('.')">.</button><button class="fn" onclick="key('^')">^</button><button class="fn" onclick="key('+')">+</button>
-<button class="fn" onclick="key('(')">(</button><button class="fn" onclick="key(')')">)</button><button class="fn" onclick="key('sqrt(')">√</button><button class="eq" onclick="go()">=</button>
+<button onclick="key('(')">(</button><button onclick="key(')')">)</button><button class="fn" onclick="key('sqrt(')">√</button><button class="eq" onclick="go()">=</button>
 </div>
+<div id="varsline"></div>
+<div class="btnrow"><button class="smallbtn" onclick="clearHistory()">Clear history</button><button class="smallbtn" onclick="clearVars()">Clear saved variables</button></div>
 </div>
-<div class="help reveal">Supports <code>+ - * / ^ %</code>, parentheses, unary minus, <code>sin cos tan asin acos atan log ln sqrt abs floor ceil exp</code>, constants <code>pi e tau</code>, and variables: <code>x = 5</code> then <code>x^2</code>. Right-associative <code>^</code>.</div>
+
+<div id="steps"><h3>How it evaluated</h3><div class="ast" id="astline"></div><div id="steplist"></div></div>
+
+<div class="batch reveal">
+<h2>Evaluate several lines at once</h2>
+<p>One expression per line, run top to bottom. Variables carry from line to line, so <code>x = 5</code> on line 1 works in <code>x^2</code> on line 2. Click <strong>Run all</strong> — nothing is sent anywhere; it all runs in your browser.</p>
+<textarea id="batch" placeholder="x = 5&#10;x^2 + 3*4&#10;sin(pi/2)"></textarea>
+<div class="btnrow"><button class="smallbtn" onclick="runBatch()">Run all</button><button class="smallbtn" onclick="document.getElementById('batchout').textContent=''">Clear results</button></div>
+<div id="batchout"></div>
+</div>
+
+<div class="help reveal">Supports <code>+ - * / ^ %</code>, parentheses, unary minus, <code>sin cos tan asin acos atan log ln sqrt abs floor ceil exp max min round</code>, constants <code>pi e tau</code>, and variables: <code>x = 5</code> then <code>x^2</code>. <code>ans</code> always holds your last result. Right-associative <code>^</code> — so <code>2^3^2 = 512</code> and <code>-3^2 = -9</code>. <code>log(x)</code> is the natural log; <code>log(x, base)</code> uses that base. Tap any past expression to reuse it. History and variables are saved in this browser only (localStorage) — clear them above any time.</div>
 
 <div class="links reveal">
 <a href="https://github.com/HVRGAMING2705/Basic-Calculator">View source on GitHub</a>
 <a href="https://github.com/HVRGAMING2705/Basic-Calculator/blob/main/calc">calc/ package</a>
-<a href="https://github.com/HVRGAMING2705/Basic-Calculator/blob/main/test_calc.py">29 tests</a>
+<a href="https://github.com/HVRGAMING2705/Basic-Calculator/blob/main/test_calc.py">32 tests</a>
 </div>
-<footer>Built by Vikranth Reddy · Expression Parser Calculator<span class="fleet-legal" style="display:block;text-align:center;padding:10px 0;font-size:13px"><a href="/legal.html">Privacy · Terms</a></span>
-</footer>
+<footer>Built by <a href="https://vikranthreddy.vercel.app">Vikranth Reddy</a> · v2.0 — production release<span style="display:block;text-align:center;padding:10px 0;font-size:13px"><a href="/legal.html">Privacy · Terms</a></span></footer>
 </div>
 <script>
-const vars={};const FUNCS={sin:Math.sin,cos:Math.cos,tan:Math.tan,asin:Math.asin,acos:Math.acos,atan:Math.atan,log:x=>Math.log10(x),ln:Math.log,sqrt:Math.sqrt,abs:Math.abs,floor:Math.floor,ceil:Math.ceil,exp:Math.exp};
+// ---- Expression parser: tokenizer -> AST -> evaluator ----
+// Mirrors calc/ in the repo (same grammar, same precedence, same errors).
+// Grammar: statement := IDENT "=" expr | expr
+//   expr := term (("+"|"-") term)* ; term := factor (("*"|"/"|"%") factor)*
+//   factor := ("-"|"+") factor | power ; power := primary ("^" factor)?
+//   primary := NUMBER | IDENT | call | "(" expr ")"
 const CONSTS={pi:Math.PI,e:Math.E,tau:Math.PI*2};
+function pyRound(x){const f=Math.floor(x),d=x-f;if(d<0.5)return f;if(d>0.5)return f+1;return f%2===0?f:f+1}
+const FUNCS={sin:Math.sin,cos:Math.cos,tan:Math.tan,asin:Math.asin,acos:Math.acos,atan:Math.atan,
+  log:function(x,b){return b===undefined?Math.log(x):Math.log(x)/Math.log(b)},ln:Math.log,
+  sqrt:Math.sqrt,abs:Math.abs,floor:Math.floor,ceil:Math.ceil,exp:Math.exp,
+  max:Math.max,min:Math.min,round:pyRound};
+let vars={};
+function fmt(v){return +v.toFixed(10)}
+function esc(s){return String(s).replace(/</g,'&lt;')}
 function tokenize(s){const t=[];let i=0;while(i<s.length){const c=s[i];
 if(/\s/.test(c)){i++;continue}
-if(/[0-9.]/.test(c)){let j=i;while(j<s.length&&/[0-9.]/.test(s[j]))j++;const v=parseFloat(s.slice(i,j));if(isNaN(v))throw 'Bad number at '+i;t.push({t:'n',v});i=j;continue}
+if(/[0-9.]/.test(c)){let j=i,dots=0;while(j<s.length&&/[0-9.]/.test(s[j])){if(s[j]==='.')dots++;j++}
+if(dots>1)throw 'Bad number "'+s.slice(i,j)+'"';const v=parseFloat(s.slice(i,j));if(isNaN(v))throw 'Bad number at '+i;t.push({t:'n',v});i=j;continue}
 if(/[a-zA-Z_]/.test(c)){let j=i;while(j<s.length&&/[a-zA-Z0-9_]/.test(s[j]))j++;t.push({t:'id',v:s.slice(i,j)});i=j;continue}
 if('+-*/^%(),='.includes(c)){t.push({t:'op',v:c});i++;continue}
 throw 'Unexpected character "'+c+'" at '+i}t.push({t:'eof'});return t}
-function parse(s){const T=tokenize(s);let p=0;const pk=()=>T[p],nx=()=>T[p++];
-function expr(){let n=term();while(pk().t==='op'&&(pk().v==='+'||pk().v==='-')){const o=nx().v,r=term();n=o==='+'?n+r:n-r}return n}
-function term(){let n=factor();while(pk().t==='op'&&(pk().v==='*'||pk().v==='/'||pk().v==='%')){const o=nx().v,r=factor();
-if(o==='*')n*=r;else if(o==='/'){if(r===0)throw 'Division by zero';n/=r}else n%=r}return n}
-function factor(){let n=unary();if(pk().t==='op'&&pk().v==='^'){nx();n=Math.pow(n,factor())}return n}
-function unary(){if(pk().t==='op'&&pk().v==='-'){nx();return -unary()}if(pk().t==='op'&&pk().v==='+'){nx();return unary()}return primary()}
+function parseAST(s){const T=tokenize(s);let p=0;const pk=()=>T[p],nx=()=>T[p++];
+function stmt(){if(pk().t==='id'&&T[p+1]&&T[p+1].t==='op'&&T[p+1].v==='='){const name=nx().v;nx();return {k:'assign',name,value:expr()}}return expr()}
+function expr(){let n=term();while(pk().t==='op'&&(pk().v==='+'||pk().v==='-')){const o=nx().v;n={k:'bin',op:o,left:n,right:term()}}return n}
+function term(){let n=factor();while(pk().t==='op'&&(pk().v==='*'||pk().v==='/'||pk().v==='%')){const o=nx().v;n={k:'bin',op:o,left:n,right:factor()}}return n}
+function factor(){if(pk().t==='op'&&(pk().v==='-'||pk().v==='+')){const o=nx().v;return {k:'un',op:o,operand:factor()}}return power()}
+function power(){const base=primary();if(pk().t==='op'&&pk().v==='^'){nx();return {k:'bin',op:'^',left:base,right:factor()}}return base}
 function primary(){const t=nx();
-if(t.t==='n')return t.v;
+if(t.t==='n')return {k:'num',v:t.v};
 if(t.t==='id'){const name=t.v;
 if(pk().t==='op'&&pk().v==='('){nx();const args=[];if(!(pk().t==='op'&&pk().v===')')){args.push(expr());while(pk().t==='op'&&pk().v===','){nx();args.push(expr())}}
-if(pk().t!=='op'||pk().v!==')')throw 'Expected )';nx();
-if(!FUNCS[name])throw 'Unknown function '+name;return FUNCS[name](...args)}
-if(name in CONSTS)return CONSTS[name];if(name in vars)return vars[name];throw 'Unknown variable '+name}
+if(pk().t!=='op'||pk().v!==')')throw 'Expected )';nx();return {k:'call',name,args}}
+return {k:'var',name}}
 if(t.t==='op'&&t.v==='('){const n=expr();if(pk().t!=='op'||pk().v!==')')throw 'Expected )';nx();return n}
 throw 'Unexpected '+(t.v??t.t)}
-// assignment
-if(T[0].t==='id'&&T[1].t==='op'&&T[1].v==='='){const name=T[0].v;p=2;const v=expr();vars[name]=v;return v}
-const v=expr();if(pk().t!=='eof')throw 'Unexpected '+pk().v;return v}
-function go(){const inp=document.getElementById('expr'),h=document.getElementById('hist');const s=inp.value.trim();if(!s)return;
-h.innerHTML+=`<div class="in">› ${s.replace(/</g,'&lt;')}</div>`;
-try{const v=parse(s);h.innerHTML+=`<div class="out">= ${+v.toFixed(10)}</div>`}catch(e){h.innerHTML+=`<div class="err">Error: ${String(e).replace(/</g,'&lt;')}</div>`}
+const node=stmt();if(pk().t!=='eof')throw 'Unexpected '+pk().v;return node}
+function astStr(n){if(n.k==='num')return fmt(n.v);if(n.k==='var')return n.name;
+if(n.k==='un')return '('+n.op+' '+astStr(n.operand)+')';
+if(n.k==='bin')return '('+n.op+' '+astStr(n.left)+' '+astStr(n.right)+')';
+if(n.k==='call')return '('+n.name+' '+n.args.map(astStr).join(' ')+')';
+if(n.k==='assign')return '(= '+n.name+' '+astStr(n.value)+')';return '?'}
+function checkReal(v,what){if(typeof v!=='number'||isNaN(v)||!isFinite(v))throw (what||'Result')+' is not a real finite number';return v}
+function evalAST(n,steps){steps=steps||[];
+if(n.k==='num')return n.v;
+if(n.k==='var'){if(n.name in CONSTS)return CONSTS[n.name];if(n.name in vars)return vars[n.name];throw 'Unknown variable '+n.name}
+if(n.k==='assign'){if(n.name in CONSTS)throw 'Cannot reassign constant '+n.name;const v=evalAST(n.value,steps);vars[n.name]=v;steps.push(n.name+' = '+fmt(v));saveVars();return v}
+if(n.k==='un'){const v=evalAST(n.operand,steps);return n.op==='-'?-v:v}
+if(n.k==='bin'){const l=evalAST(n.left,steps),r=evalAST(n.right,steps);let v;
+if(n.op==='+')v=l+r;else if(n.op==='-')v=l-r;else if(n.op==='*')v=l*r;
+else if(n.op==='/'){if(r===0)throw 'Division by zero';v=l/r}
+else if(n.op==='%'){if(r===0)throw 'Modulo by zero';v=l%r}
+else if(n.op==='^')v=Math.pow(l,r);
+checkReal(v);steps.push(fmt(l)+' '+n.op+' '+fmt(r)+' = '+fmt(v));return v}
+if(n.k==='call'){if(!FUNCS[n.name])throw 'Unknown function '+n.name;const args=n.args.map(a=>evalAST(a,steps));const v=FUNCS[n.name](...args);checkReal(v,n.name+'()');steps.push(n.name+'('+args.map(fmt).join(', ')+') = '+fmt(v));return v}
+throw 'Cannot evaluate'}
+function parse(s){const steps=[];const node=parseAST(s);const v=evalAST(node,steps);return {value:v,steps,ast:astStr(node)}}
+// ---- real persistence: this browser's localStorage only, nothing fabricated ----
+function saveVars(){try{localStorage.setItem('epc-vars-v2',JSON.stringify(vars))}catch(e){}}
+function saveHistory(){try{localStorage.setItem('epc-history-v2',JSON.stringify(history.slice(-50)))}catch(e){}}
+let history=[];
+try{const v=JSON.parse(localStorage.getItem('epc-vars-v2')||'null');if(v&&typeof v==='object'){for(const k of Object.keys(v)){if(!(k in CONSTS)&&typeof v[k]==='number'&&isFinite(v[k]))vars[k]=v[k]}}}catch(e){}
+try{const h=JSON.parse(localStorage.getItem('epc-history-v2')||'null');if(Array.isArray(h))history=h.filter(x=>x&&typeof x.in==='string')}catch(e){}
+function renderVars(){const el=document.getElementById('varsline');const keys=Object.keys(vars);
+el.innerHTML=keys.length?'Saved variables: '+keys.map(k=>'<b>'+esc(k)+'</b> = '+fmt(vars[k])).join(' · '):'No saved variables yet. Assign one, e.g. x = 5.'}
+function renderHist(){const h=document.getElementById('hist');
+if(!history.length){h.innerHTML='<div class="out">Type an expression, or use the keys. Try: <span class="in">2 + 3 * (4 - 1)^2</span></div>';return}
+h.innerHTML=history.map((e,i)=>e.err?'<div class="in" onclick="reuse('+i+')">› '+esc(e.in)+'</div><div class="err">Error: '+esc(e.err)+'</div>'
+:'<div class="in" onclick="reuse('+i+')">› '+esc(e.in)+'</div><div class="out">= '+esc(e.out)+'</div>').join('')}
+function reuse(i){if(history[i]){document.getElementById('expr').value=history[i].in;document.getElementById('expr').focus()}}
+function clearHistory(){history=[];saveHistory();renderHist()}
+function clearVars(){vars={};saveVars();renderVars()}
+function showSteps(ast,steps){const box=document.getElementById('steps');
+document.getElementById('astline').textContent='AST: '+ast;
+document.getElementById('steplist').innerHTML=steps.length?steps.map(s=>'<div>→ '+esc(s)+'</div>').join(''):'<div>Single value — no intermediate steps.</div>';
+box.style.display='block'}
+function evaluate(s){const r=parse(s);vars.ans=r.value;saveVars();return r}
+function go(){const inp=document.getElementById('expr'),h=document.getElementById('hist');const s=inp.value.trim();
+if(!s){h.innerHTML+='<div class="err">Error: empty expression — type something first.</div>';h.scrollTop=h.scrollHeight;return}
+try{const r=evaluate(s);history.push({in:s,out:fmt(r.value)});saveHistory();renderHist();showSteps(r.ast,r.steps);renderVars()}
+catch(e){history.push({in:s,err:String(e)});saveHistory();renderHist()}
 inp.value='';h.scrollTop=h.scrollHeight}
+function runBatch(){const out=document.getElementById('batchout');const lines=document.getElementById('batch').value.split('\n');
+const res=[];for(const raw of lines){const s=raw.trim();if(!s)continue;
+try{const r=evaluate(s);res.push(s+' = '+fmt(r.value))}catch(e){res.push(s+'  →  Error: '+e)}}
+out.textContent=res.length?res.join('\n'):'Nothing to run — type one expression per line.';renderVars();renderHist()}
 function key(k){document.getElementById('expr').value+=k;document.getElementById('expr').focus()}
 document.getElementById('expr').addEventListener('keydown',e=>{if(e.key==='Enter')go()});
+renderHist();renderVars();
 const io=new IntersectionObserver(e=>e.forEach(x=>x.isIntersecting&&x.target.classList.add('on')),{threshold:.1});
 document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 </script>

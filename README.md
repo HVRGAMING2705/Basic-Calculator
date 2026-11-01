@@ -15,13 +15,13 @@ that builds an AST, plus an evaluator with variables and math functions.
 - Clean errors with source position pointers:
   `CalcSyntaxError`, `CalcNameError`, `CalcMathError`
 - Interactive REPL (`repl.py`) with `vars`, `funcs`, `help`
-- 29-case test suite (`test_calc.py`)
+- 32-case test suite (`test_calc.py`)
 
 ## How to run
 
 ```bash
 python repl.py          # interactive calculator
-python test_calc.py     # run the test suite (29 tests)
+python test_calc.py     # run the test suite (32 tests)
 ```
 
 ```python
@@ -50,5 +50,5 @@ calc/
   evaluator.py   AST -> value (variables, functions, constants)
   errors.py      exception hierarchy with position info
 repl.py          interactive shell
-test_calc.py     29 test cases
+test_calc.py     32 test cases
 ```

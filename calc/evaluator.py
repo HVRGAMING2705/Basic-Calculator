@@ -59,24 +59,26 @@ class Evaluator:
         right = self.evaluate(node.right)
         try:
             if node.op == "+":
-                return left + right
-            if node.op == "-":
-                return left - right
-            if node.op == "*":
-                return left * right
-            if node.op == "/":
+                result = left + right
+            elif node.op == "-":
+                result = left - right
+            elif node.op == "*":
+                result = left * right
+            elif node.op == "/":
                 if right == 0:
                     raise CalcMathError("division by zero")
-                return left / right
-            if node.op == "%":
+                result = left / right
+            elif node.op == "%":
                 if right == 0:
                     raise CalcMathError("modulo by zero")
-                return left % right
-            if node.op == "^":
-                return left ** right
-        except OverflowError as exc:
-            raise CalcMathError(f"numeric overflow: {exc}")
-        raise CalcMathError(f"unknown operator {node.op!r}")
+                result = left % right
+            elif node.op == "^":
+                result = left ** right
+            else:
+                raise CalcMathError(f"unknown operator {node.op!r}")
+        except (OverflowError, ZeroDivisionError) as exc:
+            raise CalcMathError(f"numeric error: {exc}")
+        return _check_real(result)
 
     def _call(self, node):
         fn = FUNCTIONS.get(node.name)
@@ -84,11 +86,22 @@ class Evaluator:
             raise CalcNameError(f"unknown function {node.name!r}")
         args = [self.evaluate(a) for a in node.args]
         try:
-            return fn(*args)
-        except ValueError as exc:
+            result = fn(*args)
+        except (ValueError, TypeError, OverflowError, ZeroDivisionError) as exc:
             raise CalcMathError(f"{node.name}(): {exc}")
-        except TypeError as exc:
-            raise CalcMathError(f"{node.name}(): {exc}")
+        return _check_real(result, node.name)
+
+
+def _check_real(result, fn_name=None):
+    """Reject complex results (e.g. (-2)^0.5) and non-finite floats
+    instead of leaking them to callers as if they were answers."""
+    import math as _math
+    if isinstance(result, complex):
+        raise CalcMathError("result is not a real number")
+    if isinstance(result, float) and not _math.isfinite(result):
+        label = f"{fn_name}(): " if fn_name else ""
+        raise CalcMathError(f"{label}result is not finite")
+    return result
 
 
 def calculate(text, evaluator=None):
